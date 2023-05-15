@@ -2,10 +2,156 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  two_factor_auth   Boolean?
+  two_factor_code   Int?
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  expires      DateTime
+  sessionToken String   @unique
+  accessToken  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+
+  fundraiser_contributors Fundraiser_contributors[]
+  user_project_comments   Project_Comments[]
+  Project_Sub_comments    Project_Sub_comments[]
+}
+
+model VerificationRequest {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, token])
+}
+
+model Project {
+  project_id          Int                 @id @default(autoincrement())
+  project_title       String
+  project_description String              @db.VarChar(1000)
+  project_deadline    String?
+  project_banner      String
+  project_video       String
+  project_likes       Int
+  project_shares      Int
+  Project_Fundraising Project_Fundraiser?
+  Project_Comments    Project_Comments[]
+  Project_Analytics   Project_Analytics?
+  Project_images      Project_images[]
+}
+
+model Project_images {
+  image_id         Int     @id @default(autoincrement())
+  image_string     String
+  image_project    Project @relation(fields: [image_project_id], references: [project_id], onDelete: Cascade)
+  image_project_id Int
+}
+
+model Project_Fundraiser {
+  fundraiser_id                  Int                       @id @default(autoincrement())
+  fundraiser_goal                Int
+  fundraiser_amount_raised       Int
+  fundraiser_percentage_achieved Int
+  fundraiser_contributors        Fundraiser_contributors[]
+  fundraiser_project             Project                   @relation(fields: [fundraiser_project_id], references: [project_id], onDelete: Cascade)
+  fundraiser_project_id          Int                       @unique
+  fundraiser_rewards             Fundraiser_rewards[]
+}
+
+model Fundraiser_contributors {
+  user          User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+  fundraiser    Project_Fundraiser @relation(fields: [fundraiser_id], references: [fundraiser_id], onDelete: Cascade)
+  fundraiser_id Int
+  assignedAt    DateTime           @default(now())
+  assignedBy    String
+
+  @@id([user_id, fundraiser_id])
+}
+
+model Fundraiser_rewards {
+  rewards_id                 Int                @id @default(autoincrement())
+  rewards_title              String
+  rewards_descriprion        String
+  reward_type                Reward_Type
+  rewards_in_stock           Int?
+  rewards_amount_requirement Int
+  fundraiser                 Project_Fundraiser @relation(fields: [fundraiser_id], references: [fundraiser_id], onDelete: Cascade)
+  fundraiser_id              Int
+}
+
+enum Reward_Type {
+  merchandise
+  early_access
+  perks
+}
+
+model Project_Comments {
+  comments_id           Int                    @id @default(autoincrement())
+  comments_project      Project                @relation(fields: [comments_project_id], references: [project_id], onDelete: Cascade)
+  comments_project_id   Int
+  comments_user         User                   @relation(fields: [comments_user_id], references: [id], onDelete: Cascade)
+  comments_user_id      String
+  comments_sub_comments Project_Sub_comments[]
+}
+
+model Project_Sub_comments {
+  sub_comments_id         Int              @id @default(autoincrement())
+  sub_comments_comment    Project_Comments @relation(fields: [sub_comments_comment_id], references: [comments_id], onDelete: Cascade)
+  sub_comments_comment_id Int
+  sub_comments_user       User             @relation(fields: [sub_comments_user_id], references: [id], onDelete: Cascade)
+  sub_comments_user_id    String
+}
+
+model Project_Analytics {
+  analytics_id              Int     @id @default(autoincrement())
+  analytics_number_of_views Int
+  analytics_engagement_rate Int
+  analytics_conversion_rate Int
+  analytics_project         Project @relation(fields: [analytics_project_id], references: [project_id], onDelete: Cascade)
+  analytics_project_id      Int     @unique
 }
