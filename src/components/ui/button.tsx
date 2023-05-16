@@ -13,12 +13,13 @@ export const buttonVariants = cva(
           "bg-slate-900 text-white hover:bg-slate-900 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-100 border border-slate-200 hoverLbg-slate-100 dark:border-slate-700",
         ghost:
           "bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400 data-[state-open]:bg-transparent",
-        link: "bg-transparent dark:bg-transparent underline-offsert-4 hover:underline text-slate-900 dark:text-slate-100  ",
+        link: "bg-transparent  hover:bg-purple-100 dark:bg-transparent underline-offsert-4 hover:underline text-slate-900 dark:text-slate-100  ",
       },
       size: {
         default: "h-10 py-2 px-4",
         sm: "h-9 py-2 px-4 rounded-md",
         lg: "h-11 py-2 px-4 rounded-md",
+        xl: "h-11 py-2 px-8 rounded-md",
       },
       defaultVariants: {
         variant: "default",
