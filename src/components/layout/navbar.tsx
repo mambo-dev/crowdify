@@ -8,9 +8,7 @@ import { buttonVariants } from "../ui/button";
 import SignOutButton from "../auth/signoutbutton";
 import UserDropDownMenu from "../userdropdown";
 
-type Props = {};
-
-const NavBar = async (props: Props) => {
+const NavBar = async () => {
   const user = await getServerSession(authOptions);
 
   return (
@@ -30,7 +28,7 @@ const NavBar = async (props: Props) => {
       <div className="flex gap-6 items-center justify-center w-fit">
         <HomePageNav />
         <Link
-          href="/auth/signin"
+          href="/signin"
           className={buttonVariants({
             variant: "link",
             size: "lg",
@@ -40,7 +38,7 @@ const NavBar = async (props: Props) => {
         </Link>
 
         <Link
-          href="/auth/signup"
+          href="/signup"
           className={buttonVariants({
             variant: "default",
             size: "xl",
