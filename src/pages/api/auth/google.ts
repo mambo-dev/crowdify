@@ -1,20 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { CreatedUserAccount } from "../../../types/api";
-import { nanoid } from "nanoid";
 import { z } from "zod";
 import { withMethods } from "../../../lib/api-middlewares/with-methods";
 import { db } from "../../../lib/prisma";
+import { getGoogleOauthToken, getGoogleUser } from "../../../lib/google";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
-import * as argon2 from "argon2";
-import { getGoogleOauthToken, getGoogleUser } from "../../../lib/google";
+import { User } from "@prisma/client";
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<CreatedUserAccount>
 ) => {
   try {
-    const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN as unknown as string;
     const code = req.query.code as string;
     const pathUrl = (req.query.state as string) || "/";
 
@@ -41,64 +39,57 @@ const handler = async (
 
     const findUser = await db.user.findUnique({
       where: {
-        email,
+        user_email: email,
       },
       include: {
-        accounts: true,
+        user_account: true,
       },
     });
 
+    let user: User;
+
     if (!findUser) {
-      await db.user.create({
+      user = await db.user.create({
         data: {
-          createdAt: new Date(),
-          name,
-          email,
-          image: picture,
-          password: "",
-          emailVerified: true,
-          accounts: {
+          user_name: name,
+          user_email: email,
+          user_image: picture,
+          user_password: "",
+          user_email_verified: true,
+          user_account: {
             create: {
-              provider: "Google",
-              providerAccountId: nanoid(),
-              type: "Oauth",
+              account_provider: "Google",
             },
           },
         },
       });
-
-      return res.status(200).json({
-        error: null,
-        success: true,
+    } else {
+      user = await db.user.update({
+        where: { user_email: email },
+        data: {
+          user_name: name,
+          user_email: email,
+          user_image: picture,
+        },
       });
     }
 
-    const user = await db.user.upsert({
-      where: { email },
-      create: {
-        createdAt: new Date(),
-        name,
-        email,
-        image: picture,
-        password: "",
-        emailVerified: true,
-        accounts: {
-          create: {
-            provider: "Google",
-            providerAccountId: nanoid(),
-            type: "Oauth",
-          },
-        },
-      },
-      update: {
-        name,
-        email,
-        image: picture,
-        accounts: {
-          connect: {},
-        },
-      },
-    });
+    const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN as unknown as number;
+    const TOKEN_SECRET = process.env.JWT_SECRET as unknown as string;
+    const token = jwt.sign(
+      { id: user.user_id, email: user.user_email, image: user.user_image },
+      TOKEN_SECRET,
+      {
+        expiresIn: `${TOKEN_EXPIRES_IN}m`,
+      }
+    );
+
+    res.setHeader(
+      "Set-Cookie",
+      cookie.serialize("access_token", token, {
+        expires: new Date(Date.now() + TOKEN_EXPIRES_IN * 60 * 1000),
+      })
+    );
 
     return res.status(200).json({
       error: null,

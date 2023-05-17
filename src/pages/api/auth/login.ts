@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { CreatedUserAccount } from "../../../types/api";
-import { nanoid } from "nanoid";
 import { z } from "zod";
 import { withMethods } from "../../../lib/api-middlewares/with-methods";
 import { db } from "../../../lib/prisma";
@@ -25,10 +24,10 @@ const handler = async (
 
     const findUser = await db.user.findUnique({
       where: {
-        email: email,
+        user_email: email,
       },
       include: {
-        Account: true,
+        user_account: true,
       },
     });
 
@@ -39,14 +38,17 @@ const handler = async (
       });
     }
 
-    if (findUser.Account.provider === "Google") {
+    if (findUser.user_account?.account_provider === "Google") {
       return res.status(401).json({
-        error: `Use ${findUser.Account.provider} OAuth2 instead`,
+        error: `Use ${findUser.user_account?.account_provider} OAuth2 instead`,
         success: false,
       });
     }
 
-    const isPasswordValid = await argon2.verify(findUser.password, password);
+    const isPasswordValid = await argon2.verify(
+      findUser.user_password,
+      password
+    );
 
     if (!isPasswordValid) {
       return res.status(403).json({
@@ -58,7 +60,11 @@ const handler = async (
     const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN as unknown as number;
     const TOKEN_SECRET = process.env.JWT_SECRET as unknown as string;
     const token = jwt.sign(
-      { id: findUser.id, email: findUser.email, image: findUser.image },
+      {
+        id: findUser.user_id,
+        email: findUser.user_email,
+        image: findUser.user_image,
+      },
       TOKEN_SECRET,
       {
         expiresIn: `${TOKEN_EXPIRES_IN}m`,

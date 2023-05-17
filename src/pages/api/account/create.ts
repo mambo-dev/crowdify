@@ -32,7 +32,7 @@ const handler = async (
 
     const findUser = await db.user.findUnique({
       where: {
-        email: email,
+        user_email: email,
       },
     });
 
@@ -65,10 +65,10 @@ const handler = async (
 
     await db.user.create({
       data: {
-        email,
-        name: `${firstName} ${secondName}`,
-        password: hashed,
-        verificationCode: OTP,
+        user_email: email,
+        user_name: `${firstName} ${secondName}`,
+        user_password: hashed,
+        user_verificationCode: OTP,
       },
     });
 
