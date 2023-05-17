@@ -47,7 +47,6 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/signin",
-    newUser: "/signup",
   },
   providers: [
     GithubProvider({

@@ -4,6 +4,7 @@ import SignUpWithGoogle from "./signupwithgoogle";
 import SignUpWithGithub from "./signupwithgithub";
 import { Input } from "../ui/input";
 import Button from "../ui/button";
+import { SignInResponse, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/toast";
 import createAccount from "../../app/helpers/create-account";
@@ -29,8 +30,24 @@ const SignUpForm = (props: Props) => {
         password,
       });
 
-      router.push("/email-verification");
+      const status: SignInResponse | undefined = await signIn("credentials", {
+        redirect: false,
+        email: email,
+        password: password,
+        callbackUrl: "http://localhost:3000/crowdify",
+      });
+
+      if (status?.ok) {
+        setIsLoading(false);
+        toast({
+          message: "redirecting...",
+          title: "Welcome",
+          type: "success",
+        });
+        router.push("/email-verification");
+      }
     } catch (error: any) {
+      console.log(error);
       if (error instanceof Error) {
         toast({
           message: error.message,
