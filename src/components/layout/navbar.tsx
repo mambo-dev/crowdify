@@ -1,15 +1,15 @@
 import React from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/auth";
 import Image from "next/image";
 import HomePageNav from "./home-page-nav";
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 import SignOutButton from "../auth/signoutbutton";
 import UserDropDownMenu from "../userdropdown";
+import { withAuth } from "../../lib/api-middlewares/with-auth";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const NavBar = async () => {
-  const user = await getServerSession(authOptions);
+const NavBar = async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await withAuth(req, res);
 
   return (
     <nav className="fixed top-0 px-4 py-5 flex items-center justify-between right-0 left-0 bg-white text-slate-700 shadow h-20 dark:bg-slate-900 dark:text-slate-100 ">
@@ -47,7 +47,7 @@ const NavBar = async () => {
           sign up
         </Link>
 
-        {user && user.user && <UserDropDownMenu user={user.user} />}
+        {session && session.user && <UserDropDownMenu user={session.user} />}
       </div>
     </nav>
   );

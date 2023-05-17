@@ -1,31 +1,33 @@
 "use client";
 import React, { useState } from "react";
 import Button from "../ui/button";
-import { signIn } from "next-auth/react";
+
 import { toast } from "../ui/toast";
 import { Chrome, Loader2 } from "lucide-react";
+import signInOrSignUp from "../../app/helpers/google";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 const SignUpWithGoogle = (props: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>();
-
+  const router = useRouter();
   const signInWithGoogle = async () => {
     setIsLoading(true);
     try {
-      const signedIn = await signIn("google", {
-        callbackUrl: "/crowdify",
-      });
+      await signInOrSignUp("google");
 
       setIsLoading(false);
-      signedIn?.ok &&
-        toast({
-          title: "welcome",
-          message: "yeeei!!! welcome",
-          type: "success",
-        });
+
+      toast({
+        title: "welcome",
+        message: "yeeei!!! welcome",
+        type: "success",
+      });
+
+      router.push("/crowdify");
     } catch (error) {
-      setIsLoading(true);
+      setIsLoading(false);
       toast({
         title: "Error signing in",
         message: "Please try again later",

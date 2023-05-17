@@ -3,9 +3,8 @@ import { Verification } from "../../../types/api";
 import { z } from "zod";
 import { withMethods } from "../../../lib/api-middlewares/with-methods";
 import { db } from "../../../lib/prisma";
+import { withAuth } from "../../../lib/api-middlewares/with-auth";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/auth";
 const reqSchema = z.object({
   verificationCode: z.string().min(1, "this field is required"),
 });
@@ -16,11 +15,10 @@ const handler = async (
 ) => {
   try {
     const { verificationCode } = reqSchema.parse(req.body);
-    const user = await getServerSession(req, res, authOptions).then(
-      (res) => res?.user
-    );
+    const session = await withAuth(req, res);
 
-    if (!user) {
+    if (!session.user) {
+      console.log(session.error);
       return res.status(401).json({
         error: "unauthorized ",
         success: false,
@@ -29,7 +27,7 @@ const handler = async (
 
     const findDbUser = await db.user.findUnique({
       where: {
-        id: user.id,
+        user_id: session.user.user_id,
       },
     });
 
@@ -40,7 +38,7 @@ const handler = async (
       });
     }
 
-    const matchCode = findDbUser.verificationCode === verificationCode;
+    const matchCode = findDbUser.user_verificationCode === verificationCode;
 
     if (!matchCode) {
       return res.status(403).json({
@@ -51,10 +49,10 @@ const handler = async (
 
     await db.user.update({
       where: {
-        id: findDbUser.id,
+        user_id: findDbUser.user_id,
       },
       data: {
-        emailVerified: new Date(),
+        user_email_verified: true,
       },
     });
 

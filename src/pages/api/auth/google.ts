@@ -14,7 +14,6 @@ const handler = async (
 ) => {
   try {
     const code = req.query.code as string;
-    const pathUrl = (req.query.state as string) || "/";
 
     if (!code) {
       return res.status(401).json({
@@ -110,4 +109,4 @@ const handler = async (
   }
 };
 
-export default withMethods(["POST"], handler);
+export default withMethods(["GET"], handler);

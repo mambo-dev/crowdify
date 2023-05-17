@@ -1,4 +1,3 @@
-import { User } from "next-auth";
 import React from "react";
 import {
   DropdownMenu,
@@ -8,11 +7,10 @@ import {
 } from "./utils/dropdownmenu";
 import { buttonVariants } from "./ui/button";
 import SignOutButton from "./auth/signoutbutton";
+import { User } from "@prisma/client";
 
 type Props = {
-  user: User & {
-    id: string;
-  };
+  user: User;
 };
 
 const UserDropDownMenu = ({ user }: Props) => {
@@ -21,10 +19,12 @@ const UserDropDownMenu = ({ user }: Props) => {
       <DropdownMenuTrigger
         className={buttonVariants({ variant: "ghost", size: "sm" })}
       >
-        {user.name}
+        {user.user_name}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" forceMount>
-        <div className="w-full divide-y-2 divide-slate-100">{user.email}</div>
+        <div className="w-full divide-y-2 divide-slate-100">
+          {user.user_email}
+        </div>
         <DropdownMenuItem>donations</DropdownMenuItem>
         <DropdownMenuItem>projects</DropdownMenuItem>
         <DropdownMenuItem>

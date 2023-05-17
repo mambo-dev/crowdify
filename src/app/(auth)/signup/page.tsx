@@ -1,16 +1,26 @@
-import { getServerSession } from "next-auth";
 import React from "react";
-import { authOptions } from "../../../lib/auth";
 import { redirect } from "next/navigation";
 import Heading from "../../../components/ui/heading";
 import Paragraph from "../../../components/ui/paragraph";
 import SignUpForm from "../../../components/auth/signupform";
 import Image from "next/image";
+import { NextApiRequest, NextApiResponse } from "next";
+import {
+  getServerSession,
+  withAuth,
+} from "../../../lib/api-middlewares/with-auth";
+import { headers } from "next/dist/client/components/headers";
 
 const SignUp = async () => {
-  const user = await getServerSession(authOptions);
+  const req = {
+    headers: {
+      cookie: headers().get("cookie"),
+      authorization: headers().get("authorization"),
+    },
+  };
+  const session = await withAuth(req);
 
-  if (user) {
+  if (session.user) {
     redirect("/crowdify");
   }
 
