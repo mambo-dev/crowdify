@@ -13,7 +13,10 @@ const SignUpWithGoogle = (props: Props) => {
   const signInWithGoogle = async () => {
     setIsLoading(true);
     try {
-      const signedIn = await signIn("google");
+      const signedIn = await signIn("google", {
+        callbackUrl: "/crowdify",
+      });
+
       setIsLoading(false);
       signedIn?.ok &&
         toast({

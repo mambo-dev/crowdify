@@ -16,7 +16,7 @@ const SignUp = async () => {
 
   return (
     <section className="flex items-center justify-between">
-      <div className="w-full md:w-1/2 flex flex-col items-center pt-10  px-10">
+      <div className="w-full md:w-1/2 flex flex-col items-center pt-10 px-4  md:px-10">
         <Heading size="sm">Welcome new CrowdiFier</Heading>
         <Paragraph size="sm">
           Create your account to get started today

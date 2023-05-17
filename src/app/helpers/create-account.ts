@@ -8,7 +8,7 @@ interface IAccount {
 }
 
 export default async function createAccount(accountDetails: IAccount) {
-  const res = await fetch(`/api/api-key/revoke`, {
+  const res = await fetch(`/api/create-account/create`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",

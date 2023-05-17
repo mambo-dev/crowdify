@@ -13,7 +13,9 @@ const SignUpWithGithub = (props: Props) => {
   const signInWithGithub = async () => {
     setIsLoading(true);
     try {
-      const signedIn = await signIn("github");
+      const signedIn = await signIn("github", {
+        callbackUrl: "/crowdify",
+      });
       setIsLoading(false);
       signedIn?.ok &&
         toast({

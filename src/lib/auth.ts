@@ -46,7 +46,8 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   pages: {
-    signIn: "/login",
+    signIn: "/signin",
+    newUser: "/signup",
   },
   providers: [
     GithubProvider({
@@ -83,7 +84,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         const isPasswordValid = await argon2.verify(
-          user.password,
+          `${user.password}`,
           credentials.password
         );
 
@@ -94,7 +95,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: `${user.id}`,
           email: user.email,
-          name: user.username,
+          name: user.name,
         };
       },
     }),

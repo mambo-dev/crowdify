@@ -29,7 +29,7 @@ const SignUpForm = (props: Props) => {
         password,
       });
 
-      router.push("/email-veification");
+      router.push("/email-verification");
     } catch (error: any) {
       if (error instanceof Error) {
         toast({
@@ -51,7 +51,7 @@ const SignUpForm = (props: Props) => {
   }
   return (
     <form
-      className="max-w-6xl flex flex-col gap-6 mb-4 "
+      className="  max-w-full sm:w-fit  sm:max-w-6xl flex flex-col gap-6 mb-4 "
       onSubmit={handleCredentialsSubmit}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-3">

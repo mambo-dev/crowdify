@@ -12,21 +12,22 @@ datasource db {
 }
 
 model Account {
-  id                String   @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?  @db.Text
-  access_token      String?  @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?  @db.Text
-  session_state     String?
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  two_factor_auth   Boolean?
-  two_factor_code   Int?
+  id                       String   @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?  @db.Text
+  refresh_token_expires_in Int?
+  access_token             String?  @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?  @db.Text
+  session_state            String?
+  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  two_factor_auth          Boolean?
+  two_factor_code          Int?
 
   @@unique([provider, providerAccountId])
 }
@@ -56,6 +57,7 @@ model User {
   fundraiser_contributors Fundraiser_contributors[]
   user_project_comments   Project_Comments[]
   Project_Sub_comments    Project_Sub_comments[]
+  verificationCode        String?
 }
 
 model VerificationRequest {
