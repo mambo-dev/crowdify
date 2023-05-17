@@ -12,63 +12,45 @@ datasource db {
 }
 
 model Account {
-  id                       String   @id @default(cuid())
-  userId                   String
-  type                     String
-  provider                 String
-  providerAccountId        String
-  refresh_token            String?  @db.Text
-  refresh_token_expires_in Int?
-  access_token             String?  @db.Text
-  expires_at               Int?
-  token_type               String?
-  scope                    String?
-  id_token                 String?  @db.Text
-  session_state            String?
-  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  two_factor_auth          Boolean?
-  two_factor_code          Int?
-
-  @@unique([provider, providerAccountId])
+  account_id                       Int      @id @default(autoincrement())
+  account_provider                 String
+  account_refresh_token            String?  @db.Text
+  account_refresh_token_expires_in Int?
+  account_access_token             String?  @db.Text
+  account_expires_at               Int?
+  account_id_token                 String?  @db.Text
+  account_user                     User     @relation(fields: [account_user_id], references: [user_id], onDelete: Cascade)
+  account_user_id                  Int      @unique
+  account_two_factor_auth          Boolean?
+  account_two_factor_code          Int?
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  userId       String
-  expires      DateTime
-  sessionToken String   @unique
-  accessToken  String   @unique
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session_id            Int      @id @default(autoincrement())
+  session_user_Id       Int
+  session_expires       DateTime
+  session_session_token String   @unique
+  session_access_token  String   @unique
+  session_createdAt     DateTime @default(now())
+  session_updatedAt     DateTime @updatedAt
+  session_user          User     @relation(fields: [session_user_Id], references: [user_id], onDelete: Cascade)
 }
 
 model User {
-  id                      String                    @id @default(cuid())
-  name                    String?
-  email                   String?                   @unique
-  emailVerified           DateTime?
-  image                   String?
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
-  accounts                Account[]
-  sessions                Session[]
-  password                String?
-  fundraiser_contributors Fundraiser_contributors[]
-  user_project_comments   Project_Comments[]
-  Project_Sub_comments    Project_Sub_comments[]
-  verificationCode        String?
-}
-
-model VerificationRequest {
-  id         String   @id @default(cuid())
-  identifier String
-  token      String   @unique
-  expires    DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@unique([identifier, token])
+  user_id                      Int                       @id @default(autoincrement())
+  user_name                    String?
+  user_email                   String?                   @unique
+  user_email_verified          Boolean?
+  user_image                   String?
+  user_createdAt               DateTime                  @default(now())
+  user_updatedAt               DateTime                  @updatedAt
+  user_account                 Account?
+  user_sessions                Session[]
+  user_password                String
+  user_fundraiser_contributors Fundraiser_contributors[]
+  user_project_comments        Project_Comments[]
+  user_project_sub_comments    Project_Sub_comments[]
+  user_verificationCode        String?
 }
 
 model Project {
@@ -105,8 +87,8 @@ model Project_Fundraiser {
 }
 
 model Fundraiser_contributors {
-  user          User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id       String
+  user          User               @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  user_id       Int
   fundraiser    Project_Fundraiser @relation(fields: [fundraiser_id], references: [fundraiser_id], onDelete: Cascade)
   fundraiser_id Int
   assignedAt    DateTime           @default(now())
@@ -136,8 +118,8 @@ model Project_Comments {
   comments_id           Int                    @id @default(autoincrement())
   comments_project      Project                @relation(fields: [comments_project_id], references: [project_id], onDelete: Cascade)
   comments_project_id   Int
-  comments_user         User                   @relation(fields: [comments_user_id], references: [id], onDelete: Cascade)
-  comments_user_id      String
+  comments_user         User                   @relation(fields: [comments_user_id], references: [user_id], onDelete: Cascade)
+  comments_user_id      Int
   comments_sub_comments Project_Sub_comments[]
 }
 
@@ -145,8 +127,8 @@ model Project_Sub_comments {
   sub_comments_id         Int              @id @default(autoincrement())
   sub_comments_comment    Project_Comments @relation(fields: [sub_comments_comment_id], references: [comments_id], onDelete: Cascade)
   sub_comments_comment_id Int
-  sub_comments_user       User             @relation(fields: [sub_comments_user_id], references: [id], onDelete: Cascade)
-  sub_comments_user_id    String
+  sub_comments_user       User             @relation(fields: [sub_comments_user_id], references: [user_id], onDelete: Cascade)
+  sub_comments_user_id    Int
 }
 
 model Project_Analytics {
