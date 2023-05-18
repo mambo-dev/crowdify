@@ -13,7 +13,7 @@ datasource db {
 
 model Account {
   account_id                       Int      @id @default(autoincrement())
-  account_provider                 String
+  account_provider                 Provider @default(credentials)
   account_refresh_token            String?  @db.Text
   account_refresh_token_expires_in Int?
   account_access_token             String?  @db.Text
@@ -23,6 +23,12 @@ model Account {
   account_user_id                  Int      @unique
   account_two_factor_auth          Boolean?
   account_two_factor_code          Int?
+}
+
+enum Provider {
+  google
+  github
+  credentials
 }
 
 model Session {

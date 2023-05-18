@@ -69,6 +69,11 @@ const handler = async (
         user_name: `${firstName} ${secondName}`,
         user_password: hashed,
         user_verificationCode: OTP,
+        user_account: {
+          create: {
+            account_provider: "credentials",
+          },
+        },
       },
     });
 

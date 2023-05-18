@@ -11,6 +11,7 @@ export default async function handler(
     "Set-Cookie",
     cookie.serialize("access_token", "", {
       maxAge: -1,
+      path: "/",
     })
   );
 

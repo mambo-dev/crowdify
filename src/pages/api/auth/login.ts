@@ -38,7 +38,10 @@ const handler = async (
       });
     }
 
-    if (findUser.user_account?.account_provider === "Google") {
+    if (
+      findUser.user_account?.account_provider === "google" ||
+      findUser.user_account?.account_provider === "github"
+    ) {
       return res.status(401).json({
         error: `Use ${findUser.user_account?.account_provider} OAuth2 instead`,
         success: false,
@@ -75,6 +78,7 @@ const handler = async (
       "Set-Cookie",
       cookie.serialize("access_token", token, {
         expires: new Date(Date.now() + TOKEN_EXPIRES_IN * 60 * 1000),
+        path: "/",
       })
     );
 

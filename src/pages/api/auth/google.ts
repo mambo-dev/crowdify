@@ -58,7 +58,7 @@ const handler = async (
           user_email_verified: true,
           user_account: {
             create: {
-              account_provider: "Google",
+              account_provider: "google",
             },
           },
         },
@@ -88,6 +88,7 @@ const handler = async (
       "Set-Cookie",
       cookie.serialize("access_token", token, {
         expires: new Date(Date.now() + TOKEN_EXPIRES_IN * 60 * 1000),
+        path: "/",
       })
     );
 

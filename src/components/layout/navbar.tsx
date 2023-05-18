@@ -7,9 +7,16 @@ import SignOutButton from "../auth/signoutbutton";
 import UserDropDownMenu from "../userdropdown";
 import { withAuth } from "../../lib/api-middlewares/with-auth";
 import { NextApiRequest, NextApiResponse } from "next";
+import { headers } from "next/dist/client/components/headers";
 
-const NavBar = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await withAuth(req, res);
+const NavBar = async () => {
+  const req = {
+    headers: {
+      cookie: headers().get("cookie"),
+      authorization: headers().get("authorization"),
+    },
+  };
+  const session = await withAuth(req);
 
   return (
     <nav className="fixed top-0 px-4 py-5 flex items-center justify-between right-0 left-0 bg-white text-slate-700 shadow h-20 dark:bg-slate-900 dark:text-slate-100 ">

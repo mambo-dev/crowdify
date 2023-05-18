@@ -82,6 +82,7 @@ const handler = async (
         "Set-Cookie",
         cookie.serialize("access_token", token, {
           expires: new Date(Date.now() + TOKEN_EXPIRES_IN * 60 * 1000),
+          path: "/",
         })
       )
       .status(200)
