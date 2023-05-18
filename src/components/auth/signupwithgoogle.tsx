@@ -7,6 +7,7 @@ import { Chrome, Loader2 } from "lucide-react";
 import signInOrSignUp from "../../app/helpers/google";
 import { usePathname, useRouter } from "next/navigation";
 import { getGoogleUrl } from "../../app/helpers/getgoogleurl";
+import signInOrSignUpWithProvider from "../../app/helpers/google";
 
 type Props = {};
 
@@ -14,12 +15,11 @@ const SignUpWithGoogle = (props: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>();
   const router = useRouter();
   const pathname = usePathname();
-  const from = "/crowdify";
+  const from = pathname || "/signup";
   const signInWithGoogle = async () => {
     setIsLoading(true);
     try {
-      router.push(getGoogleUrl(from));
-      await signInOrSignUp("google");
+      router.push(await signInOrSignUpWithProvider("google", from));
 
       setIsLoading(false);
 

@@ -1,45 +1,18 @@
 import { LoggedInUser } from "../../types/api";
+import { getGoogleUrl } from "./getgoogleurl";
 
-export default async function signInOrSignUp(credential: "github" | "google") {
+export default async function signInOrSignUpWithProvider(
+  credential: "github" | "google",
+  from: string
+) {
   if (credential === "google") {
-    const res = await fetch(`/api/auth/google`, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-
-    const data = (await res.json()) as LoggedInUser;
-
-    if (data.error || !data.success) {
-      if (data.error instanceof Array) {
-        throw new Error(data.error.join(""));
-      }
-
-      throw new Error(data.error ?? "something unexpected happened");
-    }
-
-    return data.success;
+    return getGoogleUrl(from);
   }
 
   if (credential === "github") {
-    const res = await fetch(`/api/auth/github`, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-
-    const data = (await res.json()) as LoggedInUser;
-
-    if (data.error || !data.success) {
-      if (data.error instanceof Array) {
-        throw new Error(data.error.join(""));
-      }
-
-      throw new Error(data.error ?? "something unexpected happened");
-    }
-
-    return data.success;
+    //return github config screen
+    return "";
   }
+
+  throw new Error("invalid provider");
 }
