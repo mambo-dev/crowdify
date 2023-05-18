@@ -7,17 +7,15 @@ import { User } from "@prisma/client";
 import cookie from "cookie";
 import { AuthorizedUser, DecodedToken } from "../../types/api";
 
-type header = {
-  cookie: string | null;
-  authorization: string | null;
-};
-
 export async function withAuth({
   req,
   serverReq,
 }: {
   req?: {
-    headers: header;
+    headers: {
+      cookie: string | null;
+      authorization: string | null;
+    };
   };
   serverReq?: NextApiRequest;
 }): Promise<AuthorizedUser> {

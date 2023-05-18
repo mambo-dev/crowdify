@@ -16,7 +16,10 @@ const NavBar = async () => {
       authorization: headers().get("authorization"),
     },
   };
-  const session = await withAuth(req);
+
+  const session = await withAuth({
+    req,
+  });
 
   return (
     <nav className="fixed top-0 px-4 py-5 flex items-center justify-between right-0 left-0 bg-white text-slate-700 shadow h-20 dark:bg-slate-900 dark:text-slate-100 ">
@@ -34,25 +37,29 @@ const NavBar = async () => {
 
       <div className="flex gap-6 items-center justify-center w-fit">
         <HomePageNav />
-        <Link
-          href="/signin"
-          className={buttonVariants({
-            variant: "link",
-            size: "lg",
-          })}
-        >
-          sign in
-        </Link>
+        {session && session.error && (
+          <>
+            <Link
+              href="/signin"
+              className={buttonVariants({
+                variant: "link",
+                size: "lg",
+              })}
+            >
+              sign in
+            </Link>
 
-        <Link
-          href="/signup"
-          className={buttonVariants({
-            variant: "default",
-            size: "xl",
-          })}
-        >
-          sign up
-        </Link>
+            <Link
+              href="/signup"
+              className={buttonVariants({
+                variant: "default",
+                size: "xl",
+              })}
+            >
+              sign up
+            </Link>
+          </>
+        )}
 
         {session && session.user && <UserDropDownMenu user={session.user} />}
       </div>

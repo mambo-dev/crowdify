@@ -1,7 +1,7 @@
-import { CreatedUserAccount, LogOut } from "../../types/api";
+import { LogOut } from "../../types/api";
 
-export default async function logout() {
-  const res = await fetch(`/api/auth/login`, {
+export default async function signOut() {
+  const res = await fetch(`/api/auth/logout`, {
     method: "GET",
     headers: {
       "Content-type": "application/json",
