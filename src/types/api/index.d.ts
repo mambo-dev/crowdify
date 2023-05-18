@@ -23,3 +23,11 @@ export interface AuthorizedUser {
   error: string | ZodIssue[] | null;
   user: User | null;
 }
+
+export type DecodedToken = {
+  id: number;
+  email: string;
+  image: string | null;
+  iat: number;
+  exp: number;
+};

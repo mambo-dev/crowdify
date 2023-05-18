@@ -15,7 +15,8 @@ const handler = async (
 ) => {
   try {
     const { verificationCode } = reqSchema.parse(req.body);
-    const session = await withAuth(req, res);
+
+    const session = await withAuth({ serverReq: req });
 
     if (!session.user) {
       console.log(session.error);

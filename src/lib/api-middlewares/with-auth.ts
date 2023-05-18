@@ -3,24 +3,44 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { db } from "../prisma";
 import { User } from "@prisma/client";
-import { AuthorizedUser } from "../../types/api";
-import cookie from "cookie";
 
-export async function withAuth(req: {
-  headers: {
-    cookie: string | null;
-    authorization: string | null;
+import cookie from "cookie";
+import { AuthorizedUser, DecodedToken } from "../../types/api";
+
+type header = {
+  cookie: string | null;
+  authorization: string | null;
+};
+
+export async function withAuth({
+  req,
+  serverReq,
+}: {
+  req?: {
+    headers: header;
   };
+  serverReq?: NextApiRequest;
 }): Promise<AuthorizedUser> {
   try {
     let token;
 
     if (
+      serverReq &&
+      serverReq.headers.authorization &&
+      serverReq.headers.authorization.startsWith("Bearer")
+    ) {
+      token = serverReq.headers.authorization.split(" ")[1];
+    } else if (serverReq && serverReq.cookies) {
+      token = serverReq.cookies.access_token;
+    }
+
+    if (
+      req &&
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     ) {
       token = req.headers.authorization.split(" ")[1];
-    } else if (req.headers.cookie) {
+    } else if (req && req.headers.cookie) {
       const cookies = cookie.parse(req.headers.cookie);
 
       token = cookies.access_token;
@@ -35,7 +55,7 @@ export async function withAuth(req: {
 
     const JWT_SECRET = process.env.JWT_SECRET as unknown as string;
 
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
 
     if (!decoded) {
       return {
@@ -45,7 +65,7 @@ export async function withAuth(req: {
     }
 
     const user = await db.user.findUnique({
-      where: { user_id: 1 },
+      where: { user_id: decoded.id },
     });
 
     if (!user) {
