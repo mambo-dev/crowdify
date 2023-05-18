@@ -8,6 +8,7 @@ import { SignInResponse, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/toast";
 import createAccount from "../../app/helpers/create-account";
+import loginIntoAccount from "../../app/helpers/log-in";
 
 type Props = {};
 
@@ -30,22 +31,20 @@ const SignUpForm = (props: Props) => {
         password,
       });
 
-      const status: SignInResponse | undefined = await signIn("credentials", {
-        redirect: false,
-        email: email,
-        password: password,
-        callbackUrl: "http://localhost:3000/crowdify",
+      await loginIntoAccount({
+        email,
+        password,
       });
 
-      if (status?.ok) {
-        setIsLoading(false);
-        toast({
-          message: "redirecting...",
-          title: "Welcome",
-          type: "success",
-        });
+      toast({
+        title: "welcome",
+        message: "yeeei!!! welcome",
+        type: "success",
+      });
+      setIsLoading(false);
+      setTimeout(() => {
         router.push("/email-verification");
-      }
+      }, 500);
     } catch (error: any) {
       console.log(error);
       if (error instanceof Error) {

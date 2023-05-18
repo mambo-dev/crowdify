@@ -15,6 +15,10 @@ export interface LoggedInUser {
   success: boolean;
 }
 
+export interface LogOut {
+  success: boolean;
+}
+
 export interface AuthorizedUser {
   error: string | ZodIssue[] | null;
   user: User | null;
