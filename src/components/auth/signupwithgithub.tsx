@@ -1,28 +1,49 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../ui/button";
 import { signIn } from "next-auth/react";
 import { toast } from "../ui/toast";
 import { Github, Loader2 } from "lucide-react";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import signInOrSignUpWithProvider from "../../app/helpers/oauthproviders";
 
 type Props = {};
 
 const SignUpWithGithub = (props: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const from = pathname || "/signup";
 
+  useEffect(() => {
+    const error = params ? params.get("error") : null;
+
+    if (params && error) {
+      toast({
+        title: "Error signing in",
+        message: error,
+        type: "error",
+      });
+    }
+  });
   const signInWithGithub = async () => {
     setIsLoading(true);
     try {
-      const signedIn = await signIn("github", {
-        callbackUrl: "/crowdify",
-      });
+      router.push(await signInOrSignUpWithProvider("github", from));
+
       setIsLoading(false);
-      signedIn?.ok &&
-        toast({
-          title: "welcome",
-          message: "yeeei!!! welcome",
-          type: "success",
-        });
+
+      toast({
+        title: "welcome",
+        message: "yeeei!!! welcome",
+        type: "success",
+      });
     } catch (error) {
       setIsLoading(true);
       toast({

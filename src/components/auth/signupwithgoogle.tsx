@@ -4,10 +4,10 @@ import Button from "../ui/button";
 
 import { toast } from "../ui/toast";
 import { Chrome, Loader2 } from "lucide-react";
-import signInOrSignUp from "../../app/helpers/google";
+import signInOrSignUp from "../../app/helpers/oauthproviders";
 import { usePathname, useRouter } from "next/navigation";
 import { getGoogleUrl } from "../../app/helpers/getgoogleurl";
-import signInOrSignUpWithProvider from "../../app/helpers/google";
+import signInOrSignUpWithProvider from "../../app/helpers/oauthproviders";
 
 type Props = {};
 

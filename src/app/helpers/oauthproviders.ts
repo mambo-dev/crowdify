@@ -1,4 +1,5 @@
 import { LoggedInUser } from "../../types/api";
+import { getGitHubUrl } from "./getgithuburl";
 import { getGoogleUrl } from "./getgoogleurl";
 
 export default async function signInOrSignUpWithProvider(
@@ -11,7 +12,7 @@ export default async function signInOrSignUpWithProvider(
 
   if (credential === "github") {
     //return github config screen
-    return "";
+    return getGitHubUrl(from);
   }
 
   throw new Error("invalid provider");
