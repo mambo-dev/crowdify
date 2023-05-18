@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from "qs";
 
 interface GoogleOauthToken {
   access_token: string;
@@ -23,7 +24,7 @@ interface GoogleUserResult {
 function getGoogleCredentials() {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const redirect_uri = process.env.GOOGLE_CLIENT_SECRET;
+  const redirect_uri = process.env.GOOGLE_OAUTH_REDIRECT;
 
   if (!clientId || clientId.length === 0) {
     throw new Error("No google client Id set or client Id is empty");
@@ -52,14 +53,14 @@ export const getGoogleOauthToken = async ({
     code,
     client_id: getGoogleCredentials().clientId,
     client_secret: getGoogleCredentials().clientSecret,
-    redirect_uri: getGoogleCredentials().clientSecret,
+    redirect_uri: getGoogleCredentials().redirect_uri,
     grant_type: "authorization_code",
   };
 
   try {
     const { data } = await axios.post<GoogleOauthToken>(
       rootURl,
-      JSON.stringify(options),
+      qs.stringify(options),
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -69,6 +70,7 @@ export const getGoogleOauthToken = async ({
 
     return data;
   } catch (error: any) {
+    console.log(error);
     console.log("failed to get token");
     throw new Error(error);
   }

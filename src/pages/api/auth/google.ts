@@ -14,6 +14,7 @@ const handler = async (
 ) => {
   try {
     const code = req.query.code as string;
+    const pathUrl = (req.query.state as string) || "/";
 
     if (!code) {
       return res.status(401).json({
@@ -90,7 +91,7 @@ const handler = async (
       })
     );
 
-    return res.status(200).json({
+    return res.status(200).redirect(pathUrl).json({
       error: null,
       success: true,
     });
