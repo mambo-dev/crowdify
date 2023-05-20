@@ -10,6 +10,8 @@ import SignOutButton from "./auth/signoutbutton";
 import { User } from "@prisma/client";
 import AvatarDemo from "./ui/avatar";
 import Paragraph from "./ui/paragraph";
+import { Banknote, FolderClosed, FolderSearch } from "lucide-react";
+import Link from "next/link";
 
 type Props = {
   user: User;
@@ -19,15 +21,12 @@ const UserDropDownMenu = ({ user }: Props) => {
   return (
     <div>
       <DropdownMenu>
-        <DropdownMenuTrigger className="hover:bg-purple-50 group focus:outline-none rounded-md py-2 px-4 flex items-center justify-center gap-3">
-          <div className="w-[45px] h-[45px] flex items-center justify-center p-4  rounded-full bg-slate-200 group-hover:bg-white py-2">
-            <AvatarDemo
-              fallback={`${user.user_name?.charAt(0)}`}
-              //@ts-ignore
-              image={user.user_image}
-            />
-          </div>
-          {user.user_name}
+        <DropdownMenuTrigger className="bg-purple-50 group focus:outline-none rounded-full w-10 h-10 py-2 px-4 flex items-center justify-center gap-3">
+          <AvatarDemo
+            fallback={`${user.user_name?.charAt(0)}`}
+            //@ts-ignore
+            image={user.user_image}
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
@@ -38,10 +37,26 @@ const UserDropDownMenu = ({ user }: Props) => {
             <Paragraph size="sm"> {user.user_email}</Paragraph>
           </div>
           <div className="w-full border-b border-slate-100">
-            <DropdownMenuItem>donations</DropdownMenuItem>
-            <DropdownMenuItem>projects</DropdownMenuItem>
+            <Link href="/crowdify">
+              <DropdownMenuItem className="flex items-center justify-start gap-4">
+                <FolderSearch className="w-5 h-5" />
+                browse
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/crowdify/user-dashboard/donations">
+              <DropdownMenuItem className="flex items-center justify-start gap-4">
+                <Banknote className="w-5 h-5" />
+                donations
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/crowdify/user-dashboard/projects">
+              <DropdownMenuItem className="flex items-center justify-start gap-4">
+                <FolderClosed className="w-5 h-5" />
+                projects
+              </DropdownMenuItem>
+            </Link>
           </div>
-          <DropdownMenuItem>
+          <DropdownMenuItem className="hover:bg-none">
             <SignOutButton />
           </DropdownMenuItem>
         </DropdownMenuContent>

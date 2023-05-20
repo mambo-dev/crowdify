@@ -11,7 +11,7 @@ type Props = {};
 const HomePageNav = (props: Props) => {
   const pathname = usePathname();
 
-  if (pathname === "/crowdify") {
+  if (pathname?.startsWith("/crowdify")) {
     return <div className="hidden"></div>;
   }
 

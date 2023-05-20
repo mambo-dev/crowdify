@@ -8,6 +8,8 @@ import UserDropDownMenu from "../userdropdown";
 import { withAuth } from "../../lib/api-middlewares/with-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import { headers } from "next/dist/client/components/headers";
+import Heading from "../ui/heading";
+import Paragraph from "../ui/paragraph";
 
 const NavBar = async () => {
   const req = {
@@ -22,20 +24,19 @@ const NavBar = async () => {
   });
 
   return (
-    <nav className="fixed top-0 px-4 py-5 flex items-center justify-between right-0 left-0 bg-white text-slate-700 shadow h-20 dark:bg-slate-900 dark:text-slate-100 ">
-      <div className="relative w-20 h-full">
-        <Link href="/">
+    <nav className="fixed top-0 px-10  flex items-center justify-between right-0 left-0 bg-white text-slate-700 shadow h-16 dark:bg-slate-900 dark:text-slate-100 ">
+      <Link href="/">
+        <div className="relative w-20  h-14  ">
           <Image
             src="/images/logo.png"
-            className="w-full h-full"
+            className="flex-1 h-full"
             alt="loaing-logo"
             width={400}
             height={400}
           />
-        </Link>
-      </div>
-
-      <div className="flex gap-6 items-center justify-center w-fit">
+        </div>
+      </Link>
+      <div className="flex gap-6 items-center justify-center w-fit py-5">
         <HomePageNav />
         {session && session.error && (
           <>
