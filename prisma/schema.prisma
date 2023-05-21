@@ -67,8 +67,9 @@ model Project {
   project_deadline    String?
   project_banner      String
   project_video       String
-  project_likes       Int
-  project_shares      Int
+  project_likes       Int                 @default(0)
+  project_shares      Int                 @default(0)
+  project_published   Boolean             @default(false)
   Project_Fundraising Project_Fundraiser?
   Project_Comments    Project_Comments[]
   Project_Analytics   Project_Analytics?
@@ -86,9 +87,9 @@ model Project_images {
 
 model Project_Fundraiser {
   fundraiser_id                  Int                       @id @default(autoincrement())
-  fundraiser_goal                Int
-  fundraiser_amount_raised       Int
-  fundraiser_percentage_achieved Int
+  fundraiser_goal                Int                       @default(0)
+  fundraiser_amount_raised       Int                       @default(0)
+  fundraiser_percentage_achieved Int                       @default(0)
   fundraiser_contributors        Fundraiser_contributors[]
   fundraiser_project             Project                   @relation(fields: [fundraiser_project_id], references: [project_id], onDelete: Cascade)
   fundraiser_project_id          Int                       @unique
@@ -142,9 +143,9 @@ model Project_Sub_comments {
 
 model Project_Analytics {
   analytics_id              Int     @id @default(autoincrement())
-  analytics_number_of_views Int
-  analytics_engagement_rate Int
-  analytics_conversion_rate Int
+  analytics_number_of_views Int     @default(0)
+  analytics_engagement_rate Int     @default(0)
+  analytics_conversion_rate Int     @default(0)
   analytics_project         Project @relation(fields: [analytics_project_id], references: [project_id], onDelete: Cascade)
   analytics_project_id      Int     @unique
 }
