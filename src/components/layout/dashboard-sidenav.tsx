@@ -34,7 +34,7 @@ const DashboardSideNav = (props: Props) => {
   const pathname = usePathname();
 
   return (
-    <div className="w-44">
+    <div className="hidden sm:flex h-screen w-48">
       <ul className="flex flex-col gap-2 w-full">
         {sideNav.map((nav, index) => (
           <Link key={index} href={nav.link}>
