@@ -15,9 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <Providers>
-      <div className="flex items-center container justify-center pt-10 ">
+      <div className="flex items-center container justify-center pt-5">
         <DashboardSideNav />
-        <div className="container mx-auto px-4 sm:px-10 "> {children}</div>
+        <div className="mb-auto flex-1 mx-auto px-4 sm:px-10 "> {children}</div>
       </div>
       <Toaster position="top-right" />
       {/*@ts-expect-error Server Component */}

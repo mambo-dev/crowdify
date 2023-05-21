@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { User, Project } from "@prisma/client";
 
 export interface CreatedUserAccount {
   error: string | ZodIssue[] | null;
@@ -31,3 +31,8 @@ export type DecodedToken = {
   iat: number;
   exp: number;
 };
+
+export interface GetProjectResponse {
+  error: string | ZodIssue[] | null;
+  projects: Project[];
+}

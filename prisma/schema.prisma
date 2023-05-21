@@ -57,6 +57,7 @@ model User {
   user_project_comments        Project_Comments[]
   user_project_sub_comments    Project_Sub_comments[]
   user_verificationCode        String?
+  user_projects                Project[]
 }
 
 model Project {
@@ -71,7 +72,9 @@ model Project {
   Project_Fundraising Project_Fundraiser?
   Project_Comments    Project_Comments[]
   Project_Analytics   Project_Analytics?
-  Project_images      Project_images[]
+  project_images      Project_images[]
+  project_user        User                @relation(fields: [project_user_id], references: [user_id], onDelete: Cascade)
+  project_user_id     Int
 }
 
 model Project_images {
