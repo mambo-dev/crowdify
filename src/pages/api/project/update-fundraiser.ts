@@ -5,11 +5,16 @@ import { db } from "../../../lib/prisma";
 import { withAuth } from "../../../lib/api-middlewares/with-auth";
 
 const reqSchema = z.object({
-  title: z.string().min(1, "this field is required"),
-  description: z.string().min(1, "this field is required"),
-  banner: z.string().min(1, "this field is required"),
-  video: z.string().min(1, "this field is required"),
-  deadline: z.date(),
+  goal: z.number().min(1, "this field is required"),
+  rewards: z.array(
+    z.object({
+      title: z.string().min(1, "this field is required"),
+      descriprion: z.string().min(1, "this field is required"),
+      type: z.enum(["merchandise", "early_access", "perks"]),
+      stock: z.number().min(1, "this field is required"),
+      amount_requirement: z.number().min(1, "this field is required"),
+    })
+  ),
 });
 
 const handler = async (
@@ -17,9 +22,8 @@ const handler = async (
   res: NextApiResponse<{ error: string | null | ZodIssue[]; success: boolean }>
 ) => {
   try {
-    const { title, description, banner, video, deadline } = reqSchema.parse(
-      req.body
-    );
+    const { goal, rewards } = reqSchema.parse(req.body);
+    const { project_id } = req.query;
 
     const session = await withAuth({ serverReq: req });
 
@@ -43,26 +47,34 @@ const handler = async (
       });
     }
 
-    await db.project.create({
+    const fundraiser = await db.project_Fundraiser.update({
+      where: {
+        fundraiser_project_id: Number(project_id),
+      },
       data: {
-        project_banner: banner,
-        project_description: description,
-        project_title: title,
-        project_video: video,
-        project_deadline: deadline,
-        project_user: {
-          connect: {
-            user_id: findUser.user_id,
-          },
-        },
-        Project_Analytics: {
-          create: {},
-        },
-        Project_Fundraising: {
-          create: {},
-        },
+        fundraiser_goal: goal,
       },
     });
+
+    if (rewards.length > 0) {
+      await db.fundraiser_rewards.createMany({
+        data: rewards.map((reward) => {
+          return {
+            rewards_title: reward.title,
+            rewards_descriprion: reward.descriprion,
+            reward_type: reward.type,
+            rewards_in_stock: reward.stock,
+            rewards_amount_requirement: reward.amount_requirement,
+            fundraiser: {
+              connect: {
+                fundraiser_id: fundraiser.fundraiser_id,
+              },
+            },
+            fundraiser_id: fundraiser.fundraiser_id,
+          };
+        }),
+      });
+    }
 
     return res.status(200).json({
       error: null,
