@@ -5,25 +5,16 @@ import { db } from "../../../lib/prisma";
 import { withAuth } from "../../../lib/api-middlewares/with-auth";
 
 const reqSchema = z.object({
-  title: z.string().min(1, "this field is required"),
-  description: z.string().min(1, "this field is required"),
-  banner: z.string().min(1, "this field is required"),
-  video: z.string().min(1, "this field is required"),
-  deadline: z.date(),
+  images: z.array(z.string().min(1, "provide valid images")),
 });
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<{
-    error: string | null | ZodIssue[];
-    success: boolean;
-    project_id: number | null;
-  }>
+  res: NextApiResponse<{ error: string | null | ZodIssue[]; success: boolean }>
 ) => {
   try {
-    const { title, description, banner, video, deadline } = reqSchema.parse(
-      req.body
-    );
+    const { images } = reqSchema.parse(req.body);
+    const { project_id } = req.query;
 
     const session = await withAuth({ serverReq: req });
 
@@ -31,7 +22,6 @@ const handler = async (
       return res.status(401).json({
         error: "unauthorized",
         success: false,
-        project_id: null,
       });
     }
 
@@ -45,49 +35,38 @@ const handler = async (
       return res.status(403).json({
         error: "this account may have been deleted",
         success: false,
-        project_id: null,
       });
     }
 
-    await db.project.create({
-      data: {
-        project_banner: banner,
-        project_description: description,
-        project_title: title,
-        project_video: video,
-        project_deadline: deadline,
-        project_user: {
-          connect: {
-            user_id: findUser.user_id,
+    await db.project_images.createMany({
+      data: images.map((image) => {
+        return {
+          image_project_id: Number(project_id),
+          image_string: image,
+          image_project: {
+            connect: {
+              project_id: Number(project_id),
+            },
           },
-        },
-        Project_Analytics: {
-          create: {},
-        },
-        Project_Fundraising: {
-          create: {},
-        },
-      },
+        };
+      }),
     });
 
     return res.status(200).json({
       error: null,
       success: true,
-      project_id: null,
     });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         error: error.issues,
         success: false,
-        project_id: null,
       });
     }
 
     return res.status(500).json({
       error: "something unexpected happened",
       success: false,
-      project_id: null,
     });
   }
 };
