@@ -14,10 +14,10 @@ type Props = {
 
 const ProjectStepper = ({ steps, currentStep }: Props) => {
   return (
-    <ul className="w-full border rounded-md border-slate-300 flex flex-col md:flex-row md:justify-between md:px-4  divide divide-y md:divide-x  divide-slate-300 md:divide-y-0">
+    <ul className="w-full border rounded-md bg-white/30 border-slate-300 flex flex-col md:flex-row md:justify-between md:px-4  divide divide-y md:divide-x  divide-slate-300 md:divide-y-0">
       {steps.map((step) => (
         <li
-          className={`py-2 w-1/4 px-2 flex items-center gap-3 opacity-80 hover:opacity-100 cursor-pointer ${
+          className={`py-2 w-full md:w-1/4 px-2 flex items-center gap-3 opacity-80 hover:opacity-100 cursor-pointer ${
             currentStep.step === step.step && "text-purple-500"
           }`}
           key={step.step}
