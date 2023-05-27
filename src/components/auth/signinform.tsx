@@ -58,8 +58,11 @@ const SignInForm = (props: Props) => {
   }
   return (
     <form
-      className="  max-w-full sm:w-fit  sm:max-w-6xl flex flex-col gap-4 mb-4 "
-      onSubmit={handleCredentialsSubmit}
+      className=" max-w-full sm:w-fit  sm:max-w-6xl flex flex-col gap-4 mb-4 "
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleCredentialsSubmit(e);
+      }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-3">
         <SignUpWithGoogle />

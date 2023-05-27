@@ -8,6 +8,7 @@ import { TextArea } from "../ui/textarea";
 import { nanoid } from "nanoid";
 import UploadImage from "../utils/upload-images";
 import { supabase } from "../../lib/supabase";
+import createProject from "../../app/helpers/projects/createProject";
 
 type Props = {
   steps: { step: number; text: string; complete: boolean }[];
@@ -104,7 +105,7 @@ const CreateProject = ({ steps, setCurrentStep, setSteps }: Props) => {
               title: "Error",
               type: "error",
             });
-            return;
+            throw new Error("something went wrong");
           }
 
           const { data: signedUrl } = await supabase.storage
@@ -117,17 +118,17 @@ const CreateProject = ({ steps, setCurrentStep, setSteps }: Props) => {
             });
 
           return {
-            videoUrl: signedUrl,
+            videoUrl: signedUrl?.signedUrl,
             videoName,
           };
-        } catch (error) {
+        } catch (error: any) {
           console.log(error);
           toast({
             message: "failed to upload video",
             title: "Error",
             type: "error",
           });
-          return;
+          throw new Error(error.message);
         }
       };
 
@@ -146,7 +147,7 @@ const CreateProject = ({ steps, setCurrentStep, setSteps }: Props) => {
             title: "Error",
             type: "error",
           });
-          return;
+          throw new Error("something went wrong");
         }
 
         const { data: signedUrl } = await supabase.storage
@@ -159,25 +160,20 @@ const CreateProject = ({ steps, setCurrentStep, setSteps }: Props) => {
           });
 
         return {
-          bannerUrl: signedUrl,
+          bannerUrl: signedUrl?.signedUrl,
           bannerName,
         };
       };
 
-      // const filterSteps = steps.filter((step) => step.step !== 1);
-      // setSteps([
-      //   {
-      //     step: 1,
-      //     text: "Create project",
-      //     complete: true,
-      //   },
-      //   ...filterSteps,
-      // ]);
-      // setCurrentStep({
-      //   step: 2,
-      //   text: "Add goal",
-      //   complete: false,
-      // });
+      const { bannerUrl } = await uploadBanner();
+      const { videoUrl } = await uploadVideo();
+      await createProject({
+        banner: bannerUrl,
+        deadline,
+        description,
+        title,
+        video: videoUrl,
+      });
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
