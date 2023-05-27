@@ -81,6 +81,7 @@ model Project {
 model Project_images {
   image_id         Int     @id @default(autoincrement())
   image_string     String
+  image_name       String
   image_project    Project @relation(fields: [image_project_id], references: [project_id], onDelete: Cascade)
   image_project_id Int
 }

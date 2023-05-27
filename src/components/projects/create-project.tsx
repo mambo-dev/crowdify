@@ -7,7 +7,7 @@ import DatePickerComponent from "../utils/date-picker";
 import { TextArea } from "../ui/textarea";
 import { nanoid } from "nanoid";
 import UploadImage from "../utils/upload-images";
-import uploadFileTos3 from "../../lib/s3upload";
+import { supabase } from "../../lib/supabase";
 
 type Props = {
   steps: { step: number; text: string; complete: boolean }[];
@@ -88,10 +88,83 @@ const CreateProject = ({ steps, setCurrentStep, setSteps }: Props) => {
       return;
     }
     try {
-      const bannerUrl: string = await uploadFileTos3(banner);
-      console.log(bannerUrl);
-      // const filterSteps = steps.filter((step) => step.step !== 1);
+      const uploadVideo = async () => {
+        try {
+          const videoName = `banner-${nanoid()}-${video.name}`;
+          const { data, error } = await supabase.storage
+            .from("upload")
+            .upload(videoName, video, {
+              cacheControl: "3600",
+              upsert: false,
+            });
 
+          if (error) {
+            toast({
+              message: error.message,
+              title: "Error",
+              type: "error",
+            });
+            return;
+          }
+
+          const { data: signedUrl } = await supabase.storage
+            .from("upload")
+            .createSignedUrl(`${data?.path}`, 3.156e8, {
+              transform: {
+                width: 100,
+                height: 100,
+              },
+            });
+
+          return {
+            videoUrl: signedUrl,
+            videoName,
+          };
+        } catch (error) {
+          console.log(error);
+          toast({
+            message: "failed to upload video",
+            title: "Error",
+            type: "error",
+          });
+          return;
+        }
+      };
+
+      const uploadBanner = async () => {
+        const bannerName = `banner-${nanoid()}-${banner.name}`;
+        const { data, error } = await supabase.storage
+          .from("upload")
+          .upload(bannerName, banner, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (error) {
+          toast({
+            message: error.message,
+            title: "Error",
+            type: "error",
+          });
+          return;
+        }
+
+        const { data: signedUrl } = await supabase.storage
+          .from("upload")
+          .createSignedUrl(`${data?.path}`, 3.156e8, {
+            transform: {
+              width: 100,
+              height: 100,
+            },
+          });
+
+        return {
+          bannerUrl: signedUrl,
+          bannerName,
+        };
+      };
+
+      // const filterSteps = steps.filter((step) => step.step !== 1);
       // setSteps([
       //   {
       //     step: 1,
@@ -100,7 +173,6 @@ const CreateProject = ({ steps, setCurrentStep, setSteps }: Props) => {
       //   },
       //   ...filterSteps,
       // ]);
-
       // setCurrentStep({
       //   step: 2,
       //   text: "Add goal",
