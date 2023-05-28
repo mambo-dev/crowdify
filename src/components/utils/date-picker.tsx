@@ -1,13 +1,9 @@
 import React, { forwardRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { addDays, startOfDay, subDays } from "date-fns";
+import { nextDay } from "date-fns";
 
-const todayStart = startOfDay(new Date());
-const excludedInterval = {
-  start: subDays(new Date(), 3),
-  end: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
-};
+const todayStart = nextDay(new Date(), 1);
 
 type Props = {
   setDate: React.Dispatch<React.SetStateAction<Date | null>>;

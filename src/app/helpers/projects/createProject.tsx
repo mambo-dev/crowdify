@@ -3,9 +3,7 @@ import { CreateProjectResponse } from "../../../types/api";
 interface IProjectInput {
   title: string;
   description: string;
-  video: string | undefined;
-  banner: string | null | undefined;
-  deadline: Date | null;
+  deadline: Date;
 }
 
 export default async function createProject(projectDetails: IProjectInput) {
