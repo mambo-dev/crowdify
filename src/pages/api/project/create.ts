@@ -5,10 +5,8 @@ import { db } from "../../../lib/prisma";
 import { withAuth } from "../../../lib/api-middlewares/with-auth";
 
 const reqSchema = z.object({
-  title: z.string().min(1, "this field is required"),
-  description: z.string().min(1, "this field is required"),
-  banner: z.string().min(1, "this field is required"),
-  video: z.string().min(1, "this field is required"),
+  title: z.string().min(1, "title is required"),
+  description: z.string().min(1, "description is required"),
   deadline: z.date(),
 });
 
@@ -21,9 +19,7 @@ const handler = async (
   }>
 ) => {
   try {
-    const { title, description, banner, video, deadline } = reqSchema.parse(
-      req.body
-    );
+    const { title, description, deadline } = reqSchema.parse(req.body);
 
     const session = await withAuth({ serverReq: req });
 
@@ -51,10 +47,10 @@ const handler = async (
 
     await db.project.create({
       data: {
-        project_banner: banner,
+        project_banner: "",
         project_description: description,
         project_title: title,
-        project_video: video,
+        project_video: "",
         project_deadline: deadline,
         project_user: {
           connect: {

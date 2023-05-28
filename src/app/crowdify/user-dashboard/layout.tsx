@@ -3,7 +3,7 @@ import NavBar from "../../../components/layout/navbar";
 import Providers from "../../../components/providers";
 import { Toaster } from "../../../components/ui/toast";
 import { cn } from "../../../lib/utils";
-import "../globals.css";
+import "../../globals.css";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });

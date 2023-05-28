@@ -21,6 +21,10 @@ export default async function createProject(projectDetails: IProjectInput) {
 
   if (data.error || !data.success) {
     if (data.error instanceof Array) {
+      console.log(data.error);
+      data.error.forEach((error) => {
+        throw new Error(error.message);
+      });
       throw new Error(data.error.join(""));
     }
 
