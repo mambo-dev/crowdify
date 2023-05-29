@@ -18,14 +18,12 @@ const reqSchema = z.object({
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<{
-    error: string | null | ZodIssue[];
+    error: string | null;
     success: boolean;
     project_id: number | null;
   }>
 ) => {
   try {
-    const { title, description, deadline } = reqSchema.parse(req.body);
-
     const session = await withAuth({ serverReq: req });
 
     if (!session || session.error || !session.user) {
@@ -53,10 +51,11 @@ const handler = async (
     await db.project.create({
       data: {
         project_banner: "",
-        project_description: description,
-        project_title: title,
+        project_description: "",
+        project_title: "",
         project_video: "",
-        project_deadline: deadline,
+        project_deadline: new Date(),
+        project_published: false,
         project_user: {
           connect: {
             user_id: findUser.user_id,
@@ -77,14 +76,6 @@ const handler = async (
       project_id: null,
     });
   } catch (error: any) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        error: error.issues,
-        success: false,
-        project_id: null,
-      });
-    }
-
     return res.status(500).json({
       error: "something unexpected happened",
       success: false,
@@ -93,4 +84,4 @@ const handler = async (
   }
 };
 
-export default withMethods(["POST"], handler);
+export default withMethods(["GET"], handler);

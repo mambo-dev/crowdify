@@ -38,7 +38,7 @@ export interface GetProjectResponse {
 }
 
 export interface CreateProjectResponse {
-  error: string | null | ZodIssue[];
+  error: string | null;
   success: boolean;
   project_id: number | null;
 }

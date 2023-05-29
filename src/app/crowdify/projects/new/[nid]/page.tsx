@@ -4,7 +4,7 @@ import { withAuth } from "../../../../../lib/api-middlewares/with-auth";
 import { redirect } from "next/navigation";
 import { db } from "../../../../../lib/prisma";
 
-const CreateProjectPage = async () => {
+const NewProjectPage = async (params: any) => {
   const req = {
     headers: {
       cookie: headers().get("cookie"),
@@ -18,6 +18,7 @@ const CreateProjectPage = async () => {
     redirect("/signin");
   }
 
+  console.log(params);
   const projects = await db.project.findMany({
     where: {
       project_user: {
@@ -30,13 +31,7 @@ const CreateProjectPage = async () => {
     },
   });
 
-  return (
-    <CreateProjectClient
-      hasFundraiser={false}
-      hasImages={false}
-      hasProject={false}
-    />
-  );
+  return <div>new project</div>;
 };
 
-export default CreateProjectPage;
+export default NewProjectPage;

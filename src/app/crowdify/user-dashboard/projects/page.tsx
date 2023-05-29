@@ -1,14 +1,13 @@
 import React from "react";
-import Button from "../../../../components/ui/button";
-import { FolderClosed, Plus } from "lucide-react";
+import { FolderClosed } from "lucide-react";
 import Paragraph from "../../../../components/ui/paragraph";
 import Heading from "../../../../components/ui/heading";
 import { withAuth } from "../../../../lib/api-middlewares/with-auth";
 import { headers } from "next/dist/client/components/headers";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import Projects from "../../../../components/projects/projects";
 import { db } from "../../../../lib/prisma";
+import NewProject from "../../../../components/projects/newProject";
 
 const ProjectsPage = async () => {
   const req = {
@@ -43,17 +42,8 @@ const ProjectsPage = async () => {
             Create and manage projects
           </Paragraph>
         </div>
-        <Link href="/crowdify/user-dashboard/projects/new">
-          {" "}
-          <Button
-            variant="default"
-            size="default"
-            className="inline-flex items-center justify-center gap-3"
-          >
-            <Plus className="w-4 h-4" />
-            New Project
-          </Button>
-        </Link>
+
+        <NewProject />
       </div>
       {projects.length <= 0 ? (
         <div className="border py-10 px-2  border-slate-400 border-dashed  rounded-md flex flex-col gap-4 items-center justify-center">
@@ -68,16 +58,8 @@ const ProjectsPage = async () => {
               You don&apos;t have any projects yet. Start creating Projects.
             </Paragraph>
           </div>
-          <Link href="/crowdify/user-dashboard/projects/new">
-            <Button
-              variant="default"
-              size="default"
-              className="inline-flex items-center justify-center gap-3"
-            >
-              <Plus className="w-4 h-4" />
-              New Project
-            </Button>
-          </Link>
+
+          <NewProject />
         </div>
       ) : (
         <Projects projects={projects} />
