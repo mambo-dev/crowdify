@@ -9,6 +9,20 @@ import { toast } from "../ui/toast";
 
 type Props = {};
 
+export interface IProjectValues {
+  title: string;
+  description: string;
+  deadline: Date | null;
+  goal: string;
+  rewardTitle: string;
+  rewardDescription: string;
+  rewardAmountRequirement: string;
+  rewardStock: string;
+  rewardType: "merchandise" | "early_access" | "perks";
+  banner: File;
+  video: File;
+}
+
 const NewProject = ({}: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -54,7 +68,7 @@ const NewProject = ({}: Props) => {
       onClick={createNewProject}
       isLoading={isLoading}
     >
-      <Plus className="w-4 h-4" />
+      {isLoading ? null : <Plus className="w-4 h-4" />}
       New Project
     </Button>
   );
