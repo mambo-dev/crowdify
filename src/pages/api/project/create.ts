@@ -52,7 +52,7 @@ const handler = async (
       data: {
         project_banner: "",
         project_description: "",
-        project_title: "",
+        project_title: "Untitled Project",
         project_video: "",
         project_deadline: new Date(),
         project_published: false,

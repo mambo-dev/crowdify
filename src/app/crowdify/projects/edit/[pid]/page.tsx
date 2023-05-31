@@ -3,12 +3,21 @@ import { withAuth } from "../../../../../lib/api-middlewares/with-auth";
 import { redirect } from "next/navigation";
 import { db } from "../../../../../lib/prisma";
 import EditProject from "../../../../../components/projects/editProject";
-import {Project,Project_Fundraiser, Project_images } from "@prisma/client"
+import {
+  Project,
+  Project_Fundraiser,
+  Project_images,
+  Fundraiser_rewards,
+} from "@prisma/client";
 
-export type ProjectWithImages  = (Project & {
-  Project_Fundraising: Project_Fundraiser | null;
+export type ProjectWithImages = Project & {
   project_images: Project_images[];
-}) | null
+  Project_Fundraising:
+    | (Project_Fundraiser & {
+        fundraiser_rewards: Fundraiser_rewards[];
+      })
+    | null;
+};
 
 const EditCreatedProject = async (params: any) => {
   const req = {
@@ -35,14 +44,20 @@ const EditCreatedProject = async (params: any) => {
       project_id: Number(pid),
     },
     include: {
-      Project_Fundraising: true,
+      Project_Fundraising: {
+        include: {
+          fundraiser_rewards: true,
+        },
+      },
       project_images: true,
     },
   });
 
+  if (!project) {
+    redirect("/crowdify/user-dashboard/projects");
+  }
 
-
-  return <EditProject project_id={Number(pid)} />;
+  return <EditProject project={project} />;
 };
 
 export default EditCreatedProject;

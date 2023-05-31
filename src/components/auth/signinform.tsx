@@ -69,9 +69,8 @@ const SignInForm = (props: Props) => {
         <SignUpWithGithub />
       </div>
       <div className="w-full items-center flex justify-center py-2 text-slate-600">
-        Or
+        or
       </div>
-
       <div className="flex flex-col gap-2">
         <label className="font-medium text-slate-700">email</label>
         <Input

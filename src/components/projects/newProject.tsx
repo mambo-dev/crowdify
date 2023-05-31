@@ -14,13 +14,18 @@ export interface IProjectValues {
   description: string;
   deadline: Date | null;
   goal: string;
-  rewardTitle: string;
-  rewardDescription: string;
-  rewardAmountRequirement: string;
-  rewardStock: string;
-  rewardType: "merchandise" | "early_access" | "perks";
-  banner: File | null;
-  video: File | null;
+  rewards:
+    | {
+        rewardTitle: string;
+        rewardDescription: string;
+        rewardAmountRequirement: string;
+        rewardStock: string;
+        rewardType: "merchandise" | "early_access" | "perks";
+        rewardsId: number;
+      }[]
+    | undefined;
+  banner: string;
+  video: string;
 }
 
 const NewProject = ({}: Props) => {
