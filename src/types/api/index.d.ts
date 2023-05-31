@@ -42,3 +42,8 @@ export interface CreateProjectResponse {
   success: boolean;
   project_id: number | null;
 }
+
+export interface EditProjectResponse {
+  error: string | null;
+  success: boolean;
+}

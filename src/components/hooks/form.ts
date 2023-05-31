@@ -14,7 +14,7 @@ export default function useForm(initialValues: any) {
     });
   }
 
-  function handleSubmit(submitFunction: Function) {
+  function handleSubmit(submitFunction: any) {
     submitFunction();
   }
 

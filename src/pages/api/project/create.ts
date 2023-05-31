@@ -48,7 +48,7 @@ const handler = async (
       });
     }
 
-    await db.project.create({
+    const project = await db.project.create({
       data: {
         project_banner: "",
         project_description: "",
@@ -73,7 +73,7 @@ const handler = async (
     return res.status(200).json({
       error: null,
       success: true,
-      project_id: null,
+      project_id: project.project_id,
     });
   } catch (error: any) {
     return res.status(500).json({

@@ -19,8 +19,8 @@ export interface IProjectValues {
   rewardAmountRequirement: string;
   rewardStock: string;
   rewardType: "merchandise" | "early_access" | "perks";
-  banner: File;
-  video: File;
+  banner: File | null;
+  video: File | null;
 }
 
 const NewProject = ({}: Props) => {

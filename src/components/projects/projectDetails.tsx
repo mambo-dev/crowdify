@@ -36,7 +36,7 @@ type Props = {
   ) => void;
 };
 
-const CreateProject = ({ values, handleChange, setDeadline }: Props) => {
+const ProjectDetails = ({ values, handleChange, setDeadline }: Props) => {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -63,4 +63,4 @@ const CreateProject = ({ values, handleChange, setDeadline }: Props) => {
   );
 };
 
-export default CreateProject;
+export default ProjectDetails;
