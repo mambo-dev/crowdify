@@ -33,15 +33,21 @@ const handler = async (
       });
     }
 
-    const { project_id } = req.query;
+    const { reward_id } = req.query;
 
-    if (!project_id || isNaN(Number(project_id))) {
+    if (!reward_id || isNaN(Number(reward_id))) {
       throw new Error("invalid query params");
     }
 
-    const findProject = await db.project.findUnique({
+    const findProject = await db.project.findFirst({
       where: {
-        project_id: Number(project_id),
+        Project_Fundraising: {
+          fundraiser_rewards: {
+            some: {
+              rewards_id: Number(reward_id),
+            },
+          },
+        },
       },
     });
 
@@ -54,26 +60,9 @@ const handler = async (
       });
     }
 
-    const {
-      rewardAmountRequirement,
-      rewardDescription,
-      rewardStock,
-      rewardTitle,
-      rewardType,
-    } = rewardSchema.parse(req.body);
-
-    await db.fundraiser_rewards.create({
-      data: {
-        reward_type: rewardType,
-        rewards_amount_requirement: rewardAmountRequirement,
-        rewards_descriprion: rewardDescription,
-        rewards_title: rewardTitle,
-        rewards_in_stock: rewardStock,
-        fundraiser: {
-          connect: {
-            fundraiser_project_id: findProject.project_id,
-          },
-        },
+    await db.fundraiser_rewards.delete({
+      where: {
+        rewards_id: Number(reward_id),
       },
     });
 
@@ -82,7 +71,6 @@ const handler = async (
       success: true,
     });
   } catch (error: any) {
-    console.log(error);
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         error: error.issues,
@@ -97,4 +85,4 @@ const handler = async (
   }
 };
 
-export default withMethods(["POST"], handler);
+export default withMethods(["DELETE"], handler);

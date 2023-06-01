@@ -10,6 +10,10 @@ import AddRewardsModal from "./rewards/add";
 import { Project_Fundraiser, Fundraiser_rewards } from "@prisma/client";
 import EditRewardsModal from "./rewards/edit";
 import DeleteRewardModal from "./rewards/delete";
+import Button from "../ui/button";
+import { useRouter } from "next/navigation";
+import { toast } from "../ui/toast";
+import editFundraiser from "../../app/helpers/projects/editFundraiser";
 
 type Props = {
   fundraiser_details:
@@ -23,12 +27,50 @@ type Props = {
 const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
   const [openRewardModal, setOpenRewardModal] = useState(false);
   const [openEditRewardModal, setOpenEditModal] = useState(false);
+  const [goal, setGoal] = useState(fundraiser_details?.fundraiser_goal);
+  const [isLoading, setIsLoading] = useState(false);
   const [openDeleteRewardModal, setOpenDeleteRewardModal] = useState(false);
   const [selectedReward, setSelectedReward] =
     useState<Fundraiser_rewards | null>(null);
+  const router = useRouter();
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
+    try {
+      if (!goal) {
+        toast({
+          message: "a goal is required",
+          title: "Invalid input",
+          type: "error",
+        });
+        return;
+      }
+
+      await editFundraiser(goal, project_id);
+
+      router.refresh();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          message: error.message,
+          title: "Error",
+          type: "error",
+        });
+        return;
+      }
+
+      toast({
+        message: "something went wrong. Please try again later",
+        title: "Error",
+        type: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <form className="border-b border-gray-900/10 pb-12 w-full flex flex-col gap-3">
+    <div className="border-b border-gray-900/10 pb-12 w-full flex flex-col gap-3">
       <div className="flex flex-col items-start w-full">
         <Heading size="xs" className="text-left mr-auto">
           Fundraiser information
@@ -37,10 +79,25 @@ const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
           set your goals and offer rewards for your project if any
         </Paragraph>
       </div>
-      <div className="flex flex-col gap-2 w-full">
-        <label className="font-medium text-slate-700">goal</label>
-        <Input name="goal" type="text" className="bg-white" />
-      </div>
+      <form
+        onSubmit={(e) => onSubmit(e)}
+        className="w-full flex flex-col items-center"
+      >
+        <div className="flex flex-col gap-2 w-full">
+          <label className="font-medium text-slate-700">goal</label>
+          <Input
+            onChange={(e) => setGoal(Number(e.target.value))}
+            value={goal}
+            type="number"
+            className="bg-white"
+          />
+        </div>
+        <div className="mt-4 ml-auto">
+          <Button isLoading={isLoading} variant="default" size="lg">
+            save
+          </Button>
+        </div>
+      </form>
       <div className="flex flex-col gap-2 w-full">
         {!fundraiser_details?.fundraiser_rewards ||
         fundraiser_details?.fundraiser_rewards?.length <= 0 ? (
@@ -125,7 +182,7 @@ const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
           reward_id={selectedReward.rewards_id}
         />
       )}
-    </form>
+    </div>
   );
 };
 
