@@ -4,7 +4,7 @@ export default async function editReward(
   rewardsInput: IRewardsInput,
   reward_id: number
 ) {
-  const res = await fetch(`/api/project/reward/add?project_id=${reward_id}`, {
+  const res = await fetch(`/api/project/reward/edit?reward_id=${reward_id}`, {
     method: "PUT",
     headers: {
       "Content-type": "application/json",
