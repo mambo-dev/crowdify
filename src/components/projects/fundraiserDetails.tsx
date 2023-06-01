@@ -5,9 +5,10 @@ import { IProjectValues } from "./newProject";
 import { Input } from "../ui/input";
 import Heading from "../ui/heading";
 import Paragraph from "../ui/paragraph";
-import { PlusCircle } from "lucide-react";
+import { Edit2, PlusCircle, Trash2 } from "lucide-react";
 import AddRewardsModal from "./rewards/add";
 import { Project_Fundraiser, Fundraiser_rewards } from "@prisma/client";
+import EditRewardsModal from "./rewards/edit";
 
 type Props = {
   fundraiser_details:
@@ -20,6 +21,10 @@ type Props = {
 
 const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
   const [openRewardModal, setOpenRewardModal] = useState(false);
+  const [openEditRewardModal, setEditOpenRewardModal] = useState(false);
+  const [openDeleteRewardModal, setDeleteOpenRewardModal] = useState(false);
+  const [selectedReward, setSelectedReward] =
+    useState<Fundraiser_rewards | null>(null);
 
   return (
     <form className="border-b border-gray-900/10 pb-12 w-full flex flex-col gap-3">
@@ -46,21 +51,71 @@ const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
             <PlusCircle className="w-8 h-8" />
           </button>
         ) : (
-          fundraiser_details.fundraiser_rewards.map((reward) => (
-            <div
-              key={reward.rewards_id}
-              className="border border-slate-300 rounded-md py-2 px-1 w-full bg-white"
-            >
-              one reward
+          <div className="w-full flex flex-col gap-y-1">
+            <div className="w-fit ml-auto ">
+              <button
+                type="button"
+                onClick={() => setOpenRewardModal(true)}
+                className=" w-fit outline-none inline-flex items-center justify-center rounded-md p-4"
+              >
+                <PlusCircle className="w-5 h-5" />
+              </button>
             </div>
-          ))
+            <div className="flex-col flex gap-2">
+              {fundraiser_details.fundraiser_rewards.map((reward) => (
+                <div
+                  key={reward.rewards_id}
+                  className="border border-slate-300 rounded-md py-2 px-2 w-full bg-white flex items-center justify-between"
+                >
+                  <div className="flex-1  flex items-start flex-col ">
+                    <h1>{reward.rewards_title}</h1>
+                    <Paragraph size="sm" className="truncate">
+                      {reward.rewards_descriprion}
+                    </Paragraph>
+                  </div>
+
+                  <div className="flex items-start justify-end gap-2 w-fit h-fit mb-auto ">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedReward(reward);
+                        setEditOpenRewardModal(true);
+                      }}
+                      className=" w-fit outline-none inline-flex items-center justify-center rounded-md "
+                    >
+                      <Edit2 className="w-4 h-4  text-purple-500" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedReward(reward);
+                        setDeleteOpenRewardModal(true);
+                      }}
+                      className=" w-fit outline-none inline-flex items-center justify-center rounded-md "
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </div>
+
       <AddRewardsModal
         isOpen={openRewardModal}
         setIsOpen={setOpenRewardModal}
         project_id={project_id}
       />
+
+      {selectedReward && (
+        <EditRewardsModal
+          isOpen={openEditRewardModal}
+          setIsOpen={setEditOpenRewardModal}
+          reward={selectedReward}
+        />
+      )}
     </form>
   );
 };

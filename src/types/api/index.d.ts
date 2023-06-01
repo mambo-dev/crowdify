@@ -54,7 +54,7 @@ export interface IBasicInformation {
   deadline: Date | null;
 }
 
-export type AddRewardsResponse = {
+export type RewardsResponse = {
   error: string | ZodIssue[] | null;
   success: boolean;
 };

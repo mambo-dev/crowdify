@@ -3,12 +3,12 @@ import { ZodIssue, z } from "zod";
 import { withMethods } from "../../../../lib/api-middlewares/with-methods";
 import { rewardSchema } from "../../../../lib/schemas/schemas";
 import { db } from "../../../../lib/prisma";
-import { AddRewardsResponse } from "../../../../types/api";
+import { RewardsResponse } from "../../../../types/api";
 import { withAuth } from "../../../../lib/api-middlewares/with-auth";
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<AddRewardsResponse>
+  res: NextApiResponse<RewardsResponse>
 ) => {
   try {
     const session = await withAuth({ serverReq: req });
