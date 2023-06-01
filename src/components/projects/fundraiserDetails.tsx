@@ -9,6 +9,7 @@ import { Edit2, PlusCircle, Trash2 } from "lucide-react";
 import AddRewardsModal from "./rewards/add";
 import { Project_Fundraiser, Fundraiser_rewards } from "@prisma/client";
 import EditRewardsModal from "./rewards/edit";
+import DeleteRewardModal from "./rewards/delete";
 
 type Props = {
   fundraiser_details:
@@ -21,8 +22,8 @@ type Props = {
 
 const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
   const [openRewardModal, setOpenRewardModal] = useState(false);
-  const [openEditRewardModal, setEditOpenRewardModal] = useState(false);
-  const [openDeleteRewardModal, setDeleteOpenRewardModal] = useState(false);
+  const [openEditRewardModal, setOpenEditModal] = useState(false);
+  const [openDeleteRewardModal, setOpenDeleteRewardModal] = useState(false);
   const [selectedReward, setSelectedReward] =
     useState<Fundraiser_rewards | null>(null);
 
@@ -79,7 +80,7 @@ const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
                       type="button"
                       onClick={() => {
                         setSelectedReward(reward);
-                        setEditOpenRewardModal(true);
+                        setOpenEditModal(true);
                       }}
                       className=" w-fit outline-none inline-flex items-center justify-center rounded-md "
                     >
@@ -89,7 +90,7 @@ const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
                       type="button"
                       onClick={() => {
                         setSelectedReward(reward);
-                        setDeleteOpenRewardModal(true);
+                        setOpenDeleteRewardModal(true);
                       }}
                       className=" w-fit outline-none inline-flex items-center justify-center rounded-md "
                     >
@@ -112,8 +113,16 @@ const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
       {selectedReward && (
         <EditRewardsModal
           isOpen={openEditRewardModal}
-          setIsOpen={setEditOpenRewardModal}
+          setIsOpen={setOpenEditModal}
           reward={selectedReward}
+        />
+      )}
+
+      {selectedReward && (
+        <DeleteRewardModal
+          isOpen={openDeleteRewardModal}
+          setIsOpen={setOpenDeleteRewardModal}
+          reward_id={selectedReward.rewards_id}
         />
       )}
     </form>
