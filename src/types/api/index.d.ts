@@ -53,3 +53,16 @@ export interface IBasicInformation {
   description: string;
   deadline: Date | null;
 }
+
+export type AddRewardsResponse = {
+  error: string | ZodIssue[] | null;
+  success: boolean;
+};
+
+export interface IRewardsInput {
+  rewardTitle: string;
+  rewardDescription: string;
+  rewardAmountRequirement: number;
+  rewardStock: number;
+  rewardType: "merchandise" | "early_access" | "perks";
+}

@@ -7,16 +7,22 @@ import Heading from "../ui/heading";
 import Paragraph from "../ui/paragraph";
 import { PlusCircle } from "lucide-react";
 import AddRewardsModal from "./rewards/add";
+import { Project_Fundraiser, Fundraiser_rewards } from "@prisma/client";
 
-type Props = {};
+type Props = {
+  fundraiser_details:
+    | (Project_Fundraiser & {
+        fundraiser_rewards: Fundraiser_rewards[];
+      })
+    | null;
+  project_id: number;
+};
 
-const FundraiserDetails = ({}: Props) => {
-  const [rewards, setRewards] = useState<IProjectValues["rewards"]>([]);
-
+const FundraiserDetails = ({ fundraiser_details, project_id }: Props) => {
   const [openRewardModal, setOpenRewardModal] = useState(false);
 
   return (
-    <div className="border-b border-gray-900/10 pb-12 w-full flex flex-col gap-3">
+    <form className="border-b border-gray-900/10 pb-12 w-full flex flex-col gap-3">
       <div className="flex flex-col items-start w-full">
         <Heading size="xs" className="text-left mr-auto">
           Fundraiser information
@@ -30,7 +36,8 @@ const FundraiserDetails = ({}: Props) => {
         <Input name="goal" type="text" className="bg-white" />
       </div>
       <div className="flex flex-col gap-2 w-full">
-        {!rewards || rewards?.length <= 0 ? (
+        {!fundraiser_details?.fundraiser_rewards ||
+        fundraiser_details?.fundraiser_rewards?.length <= 0 ? (
           <button
             type="button"
             onClick={() => setOpenRewardModal(true)}
@@ -39,9 +46,9 @@ const FundraiserDetails = ({}: Props) => {
             <PlusCircle className="w-8 h-8" />
           </button>
         ) : (
-          rewards.map((reward) => (
+          fundraiser_details.fundraiser_rewards.map((reward) => (
             <div
-              key={reward.rewardsId}
+              key={reward.rewards_id}
               className="border border-slate-300 rounded-md py-2 px-1 w-full bg-white"
             >
               one reward
@@ -52,11 +59,9 @@ const FundraiserDetails = ({}: Props) => {
       <AddRewardsModal
         isOpen={openRewardModal}
         setIsOpen={setOpenRewardModal}
-        setRewards={setRewards}
-        rewards={rewards}
-        project_fundraising_id={1}
+        project_id={project_id}
       />
-    </div>
+    </form>
   );
 };
 

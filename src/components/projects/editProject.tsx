@@ -25,7 +25,10 @@ const EditProject = ({ project }: Props) => {
 
       {/* fundraiser information */}
 
-      <FundraiserDetails />
+      <FundraiserDetails
+        fundraiser_details={project.Project_Fundraising}
+        project_id={project.project_id}
+      />
 
       {/* upload images */}
     </div>
