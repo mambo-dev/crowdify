@@ -1,9 +1,9 @@
 import React, { forwardRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { nextDay } from "date-fns";
+import { addDays } from "date-fns";
 
-const todayStart = nextDay(new Date(), 1);
+const fromNextDay = addDays(new Date(), 1);
 
 type Props = {
   setDate: React.Dispatch<React.SetStateAction<Date | null>>;
@@ -29,7 +29,7 @@ export default function DatePickerComponent({
         showPopperArrow
         todayButton
         showTimeSelect
-        minDate={todayStart}
+        minDate={fromNextDay}
         onChange={(date) => setDate(date)}
         dateFormat={dateFormat}
         placeholderText="select date"

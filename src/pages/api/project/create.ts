@@ -3,6 +3,7 @@ import { ZodIssue, z } from "zod";
 import { withMethods } from "../../../lib/api-middlewares/with-methods";
 import { db } from "../../../lib/prisma";
 import { withAuth } from "../../../lib/api-middlewares/with-auth";
+import { addDays } from "date-fns";
 
 const reqSchema = z.object({
   title: z.string().min(1, "title is required"),
@@ -54,7 +55,7 @@ const handler = async (
         project_description: "",
         project_title: "Untitled Project",
         project_video: "",
-        project_deadline: new Date(),
+        project_deadline: addDays(new Date(), 1),
         project_published: false,
         project_user: {
           connect: {

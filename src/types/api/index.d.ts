@@ -43,7 +43,13 @@ export interface CreateProjectResponse {
   project_id: number | null;
 }
 
-export interface EditProjectResponse {
-  error: string | null;
+export interface EditBasicInfoResponse {
+  error: string | ZodIssue[] | null;
   success: boolean;
+}
+
+export interface IBasicInformation {
+  title: string;
+  description: string;
+  deadline: Date | null;
 }

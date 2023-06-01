@@ -29,9 +29,27 @@ type Props = {
         rewardsId: number;
       }[]
     | undefined;
+    project_fundraising_id:number
 };
 
-const AddRewards = ({ isOpen, setIsOpen }: Props) => {
+const AddRewardsModal = ({ isOpen, setIsOpen, project_fundraising_id }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const initialState: {
+    rewardTitle: string;
+    rewardDescription: string;
+    rewardAmountRequirement: string;
+    rewardStock: string;
+    rewardType: "merchandise" | "early_access" | "perks";
+  } = {
+    rewardTitle: "",
+    rewardDescription: "",
+    rewardAmountRequirement: "",
+    rewardStock: "",
+    rewardType: "merchandise",
+  };
+
+  function onSubmit(data: typeof initialState) {}
+
   function closeModal() {
     setIsOpen(false);
   }
@@ -91,4 +109,4 @@ const AddRewards = ({ isOpen, setIsOpen }: Props) => {
   );
 };
 
-export default AddRewards;
+export default AddRewardsModal;

@@ -19,7 +19,7 @@ export type ProjectWithImages = Project & {
     | null;
 };
 
-const EditCreatedProject = async (params: any) => {
+const EditProjectPage = async (params: any) => {
   const req = {
     headers: {
       cookie: headers().get("cookie"),
@@ -60,4 +60,4 @@ const EditCreatedProject = async (params: any) => {
   return <EditProject project={project} />;
 };
 
-export default EditCreatedProject;
+export default EditProjectPage;

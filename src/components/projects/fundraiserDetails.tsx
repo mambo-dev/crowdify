@@ -6,21 +6,12 @@ import { Input } from "../ui/input";
 import Heading from "../ui/heading";
 import Paragraph from "../ui/paragraph";
 import { PlusCircle } from "lucide-react";
-import AddRewards from "./rewards/add";
+import AddRewardsModal from "./rewards/add";
 
-type Props = {
-  handleChange: (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => void;
-  values: IProjectValues;
-};
+type Props = {};
 
-const FundraiserDetails = ({ handleChange, values }: Props) => {
-  const [rewards, setRewards] = useState<IProjectValues["rewards"]>(
-    values.rewards
-  );
+const FundraiserDetails = ({}: Props) => {
+  const [rewards, setRewards] = useState<IProjectValues["rewards"]>([]);
 
   const [openRewardModal, setOpenRewardModal] = useState(false);
 
@@ -36,13 +27,7 @@ const FundraiserDetails = ({ handleChange, values }: Props) => {
       </div>
       <div className="flex flex-col gap-2 w-full">
         <label className="font-medium text-slate-700">goal</label>
-        <Input
-          onChange={handleChange}
-          value={values.goal}
-          name="goal"
-          type="text"
-          className="bg-white"
-        />
+        <Input name="goal" type="text" className="bg-white" />
       </div>
       <div className="flex flex-col gap-2 w-full">
         {!rewards || rewards?.length <= 0 ? (
@@ -64,11 +49,12 @@ const FundraiserDetails = ({ handleChange, values }: Props) => {
           ))
         )}
       </div>
-      <AddRewards
+      <AddRewardsModal
         isOpen={openRewardModal}
         setIsOpen={setOpenRewardModal}
         setRewards={setRewards}
         rewards={rewards}
+        project_fundraising_id={1}
       />
     </div>
   );
